@@ -2,4 +2,4 @@
 - 👀 I’m interested in Ux/Ui Desing
 - 🌱 I’m currently learning going deeper into the fundamental building blocks
 - 💞️ I’m looking to collaborate on websites proyects
-- 📫 How to reach me Instagram: illustratedbyalena
+- 📫 How to reach me Instagram: desingbyalena
