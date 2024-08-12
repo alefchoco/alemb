@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+ <title></title>
+ <link rel="stylesheet" href="style.css">
+</head><h1>Hello World</h1>
+ <h3>Aqui se comienza el caminito a la montaña </h3>
+ <button>Solo Pandicornios</button>
+
+<body>
+
+ <script src="script.js"></script>
+</body>
+</html>
