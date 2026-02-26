@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>¡Feliz Cumpleaños!</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="background-styles">
+    /* Subtle festive pattern background */
+    body {
+      background-color: #fef2f2; /* Soft pastel pink/red */
+      background-image: radial-gradient(#fecaca 1px, transparent 1px), radial-gradient(#fed7aa 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      overflow: hidden; /* Prevent scrollbars during confetti */
+    }
+  </style>
+<style data-purpose="cupcake-styling">
+    /* Base styles for the cupcake parts */
+    .cupcake-container {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .cupcake-container:hover {
+      transform: scale(1.05);
+    }
+    .frosting {
+      background: #fdf2f8;
+      border: 4px solid #f472b6;
+      border-radius: 50% 50% 10% 10%;
+    }
+    .base {
+      background: #fbbf24;
+      clip-path: polygon(10% 0%, 90% 0%, 80% 100%, 20% 100%);
+    }
+    
+    /* Candle visibility logic */
+    #candle {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .is-lit #candle {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Flame Animation */
+    .flame {
+      width: 15px;
+      height: 25px;
+      background: #f97316;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 10px #fbbf24;
+      animation: flicker 0.1s infinite alternate;
+      cursor: crosshair;
+    }
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-2deg); }
+      100% { transform: scale(1.1) rotate(2deg); }
+    }
+
+    /* Smoke puff animation */
+    .smoke {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: #94a3b8;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .extinguished .flame {
+      display: none;
+    }
+    .extinguished .smoke {
+      animation: puff 1s ease-out forwards;
+    }
+    @keyframes puff {
+      0% { opacity: 0.8; transform: translateX(-50%) translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(3); }
+    }
+  </style>
+<style data-purpose="confetti-styling">
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      z-index: 50;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center m-0 p-4 font-sans">
+<!-- BEGIN: HeaderSection -->
+<header class="text-center mb-12" data-purpose="main-heading">
+<h1 class="text-6xl md:text-8xl font-black text-pink-500 drop-shadow-lg animate-bounce">
+      ¡Feliz Cumpleaños!
+    </h1>
+<p class="text-gray-600 mt-4 text-xl">Haz clic en el pastel para celebrar</p>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: MainContent -->
+<main class="relative" data-purpose="interaction-area">
+<!-- Cupcake Component -->
+<div class="cupcake-container relative w-64 h-80 flex flex-col items-center justify-end" data-purpose="interactive-cupcake" id="cupcake" onclick="handleCupcakeClick()">
+<!-- Candle: Appears after click -->
+<div class="relative w-4 h-20 bg-blue-200 border-2 border-blue-300 rounded-t mb-[-5px] z-20 flex flex-col items-center" id="candle" onmouseenter="extinguishFlame()">
+<!-- Flame -->
+<div class="flame mt-[-25px]"></div>
+<!-- Smoke (Hidden until extinguished) -->
+<div class="smoke"></div>
+</div>
+<!-- Frosting -->
+<div class="frosting w-48 h-32 z-10 relative overflow-hidden">
+<!-- Sprinkles -->
+<div class="absolute top-4 left-10 w-2 h-4 bg-yellow-400 rounded-full rotate-45"></div>
+<div class="absolute top-8 left-24 w-2 h-4 bg-blue-400 rounded-full -rotate-12"></div>
+<div class="absolute top-14 left-12 w-2 h-4 bg-green-400 rounded-full rotate-90"></div>
+<div class="absolute top-10 left-36 w-2 h-4 bg-purple-400 rounded-full -rotate-45"></div>
+</div>
+<!-- Base/Wrapper -->
+<div class="base w-40 h-32 mt-[-10px] z-0 shadow-inner">
+<!-- Lines on the wrapper -->
+<div class="flex justify-around px-4 pt-2">
+<div class="w-1 h-28 bg-yellow-600 opacity-20"></div>
+<div class="w-1 h-28 bg-yellow-600 opacity-20"></div>
+<div class="w-1 h-28 bg-yellow-600 opacity-20"></div>
+<div class="w-1 h-28 bg-yellow-600 opacity-20"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: JavaScriptInteractions -->
+<script data-purpose="confetti-logic">
+    /**
+     * Creates a burst of confetti across the screen
+     */
+    function createConfetti() {
+      const colors = ['#f472b6', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-20px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        document.body.appendChild(confetti);
+        
+        // Cleanup
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+  </script>
+<script data-purpose="event-handlers">
+    let isLit = false;
+
+    /**
+     * Handles the initial click on the cupcake
+     */
+    function handleCupcakeClick() {
+      const cupcake = document.getElementById('cupcake');
+      const candle = document.getElementById('candle');
+      
+      // Trigger confetti
+      createConfetti();
+      
+      // Toggle candle and lit state
+      if (!isLit) {
+        cupcake.classList.add('is-lit');
+        candle.classList.remove('extinguished');
+        isLit = true;
+      }
+    }
+
+    /**
+     * Handles 'blowing out' the candle
+     */
+    function extinguishFlame() {
+      const candle = document.getElementById('candle');
+      if (isLit && !candle.classList.contains('extinguished')) {
+        candle.classList.add('extinguished');
+        // Reset state after a delay to allow re-lighting if clicked again
+        setTimeout(() => {
+          isLit = false;
+          document.getElementById('cupcake').classList.remove('is-lit');
+        }, 2000);
+      }
+    }
+  </script>
+<!-- END: JavaScriptInteractions -->
+</body></html>
