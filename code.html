@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>COMMAND CENTER | DEVELOPER HUD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#06f9f9",
+                        "secondary": "#bd00ff",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#050f0f",
+                        "panel": "#0c1d1d",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+        .crt-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .glitch-hover:hover {
+            text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .hexagon {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .rotate-x-15 {
+            transform: rotateX(15deg);
+        }
+        .sidebar-mask {
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-background-dark overflow-hidden">
+<!-- Background Space & Particles -->
+<div class="fixed inset-0 z-0 bg-background-dark overflow-hidden">
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, #06f9f9 1px, transparent 0); background-size: 40px 40px;"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark/50 to-background-dark"></div>
+<!-- Animated Nebula Glows -->
+<div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-secondary/10 blur-[120px] rounded-full"></div>
+</div>
+<!-- Main Viewport Overlay (CRT Effect) -->
+<div class="fixed inset-0 z-50 crt-overlay pointer-events-none opacity-30"></div>
+<div class="relative z-10 flex flex-col h-screen p-4 md:p-6 lg:p-8">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-primary/20 pb-4 mb-6">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary/10 border border-primary flex items-center justify-center rounded-lg shadow-[0_0_15px_rgba(6,249,249,0.3)]">
+<span class="material-symbols-outlined text-primary scale-110">rocket_launch</span>
+</div>
+<div>
+<h1 class="text-sm font-bold tracking-widest text-primary uppercase">Stratos_V1 // Command</h1>
+<p class="text-[10px] text-primary/60 font-medium">Uptime: 1024:12:44</p>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-4 border-l border-primary/20 pl-6">
+<div class="flex flex-col">
+<span class="text-[10px] text-primary/40 uppercase tracking-tighter">Pilot Auth</span>
+<span class="text-xs font-bold text-primary italic">[DEV_NAME]</span>
+</div>
+<div class="h-8 w-[1px] bg-primary/20"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-primary/40 uppercase tracking-tighter">Coordinates</span>
+<span class="text-xs font-bold text-primary">40.7128° N, 74.0060° W</span>
+</div>
+</div>
+</div>
+<nav class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-primary/30 rounded-lg hover:bg-primary hover:text-background-dark transition-all duration-300 text-xs font-bold group">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>DEBUG_LOGS</span>
+</button>
+<button class="p-2 border border-primary/30 rounded-lg hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-primary">settings</span>
+</button>
+</nav>
+</header>
+<!-- Main HUD Layout -->
+<main class="flex-1 flex gap-6 overflow-hidden">
+<!-- Left Diagnostic Panel -->
+<aside class="hidden lg:flex w-64 flex-col gap-4 sidebar-mask overflow-hidden">
+<div class="bg-primary/5 border border-primary/20 rounded-lg p-4">
+<h3 class="text-[10px] text-primary font-bold mb-3 flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full animate-pulse"></span>
+                        SYSTEM_DIAGNOSTICS
+                    </h3>
+<div class="space-y-3 font-mono text-[10px] text-primary/70">
+<div class="flex justify-between border-b border-primary/10 pb-1">
+<span>CPU_LOAD</span>
+<span class="text-primary">24.5%</span>
+</div>
+<div class="flex justify-between border-b border-primary/10 pb-1">
+<span>MEM_STACK</span>
+<span class="text-primary">12.8 GB</span>
+</div>
+<div class="flex justify-between border-b border-primary/10 pb-1">
+<span>LATENCY</span>
+<span class="text-primary">14ms</span>
+</div>
+<div class="pt-2">
+<div class="h-1 w-full bg-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 shadow-[0_0_8px_rgba(6,249,249,1)]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 bg-primary/5 border border-primary/20 rounded-lg p-4 overflow-hidden relative">
+<h3 class="text-[10px] text-primary font-bold mb-3">ACTIVE_PROCESSES</h3>
+<div class="text-[9px] font-mono text-primary/40 space-y-1">
+<p class="text-primary/90">&gt; Initializing kernel...</p>
+<p>&gt; loading drivers/gpu_core</p>
+<p>&gt; mapping virtual_mem_0x00</p>
+<p class="text-secondary">&gt; alert: coffee_level low</p>
+<p>&gt; mounting /projects/react_v18</p>
+<p>&gt; mounting /projects/three_js</p>
+<p>&gt; system.optimize(true)</p>
+<p>&gt; status: stable</p>
+<p>&gt; monitoring network traffic...</p>
+<p>&gt; packet 128.0.0.1 received</p>
+<p>&gt; handshaking sequence...</p>
+<p class="text-primary/90">&gt; root@dev:~# tail -f logs</p>
+<p>&gt; GET /api/v1/skills 200 OK</p>
+<p>&gt; POST /contact/send SUCCESS</p>
+</div>
+</div>
+</aside>
+<!-- Central Content (The Cockpit) -->
+<section class="flex-1 relative flex flex-col items-center justify-center perspective-1000">
+<!-- Central HUD Circle -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-[80%] aspect-square max-w-[600px] border border-primary/10 rounded-full flex items-center justify-center relative">
+<!-- Outer rotating rings -->
+<div class="absolute inset-0 border-2 border-dashed border-primary/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
+<div class="absolute inset-8 border border-primary/5 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+<!-- HUD Scanning Line -->
+<div class="absolute inset-0 overflow-hidden rounded-full">
+<div class="w-full h-1 bg-primary/30 blur-[4px] absolute top-0 shadow-[0_0_15px_rgba(6,249,249,0.8)] animate-[scanline_4s_linear_infinite]"></div>
+</div>
+</div>
+</div>
+<!-- Floating 3D Modules -->
+<div class="relative z-20 flex flex-col md:flex-row items-center gap-8 md:gap-16 lg:gap-24 animate-[float_6s_ease-in-out_infinite]">
+<!-- PROJECTS MODULE -->
+<div class="group relative perspective-1000 cursor-pointer">
+<div class="w-48 h-48 bg-primary/5 backdrop-blur-sm border border-primary/40 rounded-xl flex flex-col items-center justify-center gap-4 transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/20 group-hover:border-primary shadow-[0_0_20px_rgba(6,249,249,0.1)] group-hover:shadow-[0_0_30px_rgba(6,249,249,0.3)] rotate-x-15">
+<span class="material-symbols-outlined text-primary text-5xl group-hover:animate-pulse">deployed_code</span>
+<div class="text-center">
+<h2 class="text-primary font-bold tracking-widest text-sm glitch-hover">PROJECTS</h2>
+<span class="text-[10px] text-primary/50 uppercase">Explore_Works</span>
+</div>
+<!-- Corners decor -->
+<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary rounded-br-lg"></div>
+</div>
+</div>
+<!-- HERO HUD (Central Text) -->
+<div class="flex flex-col items-center justify-center text-center gap-2 max-w-sm min-w-[400px]">
+<div class="relative w-full aspect-square flex flex-col items-center justify-center">
+<!-- Mini-Game Canvas -->
+<canvas class="absolute inset-0 w-full h-full opacity-60 pointer-events-none" height="300" id="gameCanvas" width="400"></canvas>
+<!-- Game UI Overlay -->
+<div class="relative z-30 flex flex-col items-center justify-center gap-2 pointer-events-auto" id="gameUI">
+<div class="px-4 py-2 bg-primary/10 border border-primary/40 rounded-full mb-4">
+<span class="text-[10px] text-primary font-bold tracking-tighter uppercase flex items-center gap-2">
+<span class="size-1.5 bg-primary rounded-full animate-ping"></span>
+                LEVEL 01: NEURAL_DEFENSE
+            </span>
+</div>
+<h2 class="text-4xl md:text-5xl font-black text-slate-100 tracking-tighter uppercase drop-shadow-[0_0_10px_rgba(6,249,249,0.5)] cursor-pointer hover:scale-105 transition-transform" id="gameTitle">
+<span class="text-primary">START</span><br/>SIMULATION
+        </h2>
+<div class="w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent my-2"></div>
+<div class="flex gap-6 text-[10px] font-mono text-primary/60 tracking-widest uppercase">
+<div class="flex flex-col">
+<span>Score</span>
+<span class="text-primary font-bold text-sm" id="gameScore">0000</span>
+</div>
+<div class="flex flex-col">
+<span>High_Score</span>
+<span class="text-secondary font-bold text-sm">8500</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SKILLS MODULE -->
+<div class="group relative perspective-1000 cursor-pointer">
+<div class="w-48 h-48 bg-secondary/5 backdrop-blur-sm border border-secondary/40 rounded-xl flex flex-col items-center justify-center gap-4 transition-all duration-500 group-hover:scale-110 group-hover:bg-secondary/20 group-hover:border-secondary shadow-[0_0_20px_rgba(189,0,255,0.1)] group-hover:shadow-[0_0_30px_rgba(189,0,255,0.3)] rotate-x-15">
+<span class="material-symbols-outlined text-secondary text-5xl group-hover:rotate-12 transition-transform">database</span>
+<div class="text-center">
+<h2 class="text-secondary font-bold tracking-widest text-sm glitch-hover">SKILLS</h2>
+<span class="text-[10px] text-secondary/50 uppercase">Tech_Stack</span>
+</div>
+<!-- Corners decor -->
+<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-secondary rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-secondary rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-secondary rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-secondary rounded-br-lg"></div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Controls -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6">
+<button class="hexagon w-16 h-16 bg-primary/10 border border-primary/40 flex items-center justify-center group hover:bg-primary transition-all duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-background-dark scale-125">mail</span>
+</button>
+<button class="hexagon w-16 h-16 bg-primary/10 border border-primary/40 flex items-center justify-center group hover:bg-primary transition-all duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-background-dark scale-125">share</span>
+</button>
+<button class="hexagon w-16 h-16 bg-secondary/10 border border-secondary/40 flex items-center justify-center group hover:bg-secondary transition-all duration-300">
+<span class="material-symbols-outlined text-secondary group-hover:text-background-dark scale-125">power_settings_new</span>
+</button>
+</div>
+</section>
+<!-- Right Terminal Panels -->
+<aside class="hidden xl:flex w-72 flex-col gap-4 sidebar-mask overflow-hidden">
+<div class="flex-1 bg-primary/5 border border-primary/20 rounded-lg p-4 relative overflow-hidden">
+<h3 class="text-[10px] text-primary font-bold mb-3 flex items-center justify-between">
+<span>CODE_STREAM</span>
+<span class="text-primary animate-pulse">REC</span>
+</h3>
+<div class="font-mono text-[9px] text-primary/60 space-y-2 leading-relaxed">
+<p class="text-primary/90">const developer = {</p>
+<p class="pl-2">name: "[NAME]",</p>
+<p class="pl-2">role: "Senior Front-end",</p>
+<p class="pl-2">focus: "Immersive UI/UX",</p>
+<p class="pl-2">tools: ["React", "Three.js", "TW"],</p>
+<p class="pl-2">status: "OPEN_FOR_PROJECTS"</p>
+<p class="text-primary/90">};</p>
+<p class="pt-4 text-primary/40">function initiateLaunch() {</p>
+<p class="pl-2">return Promise.all([</p>
+<p class="pl-4">checkEngines(),</p>
+<p class="pl-4">validateFuel(),</p>
+<p class="pl-4">syncTelemetry()</p>
+<p class="pl-2">]);</p>
+<p class="text-primary/40">}</p>
+</div>
+<!-- Visual Graph -->
+<div class="mt-4 pt-4 border-t border-primary/10">
+<div class="flex items-end gap-[2px] h-12">
+<div class="flex-1 bg-primary/30 h-[20%]"></div>
+<div class="flex-1 bg-primary/30 h-[40%]"></div>
+<div class="flex-1 bg-primary/30 h-[80%]"></div>
+<div class="flex-1 bg-primary/30 h-[60%]"></div>
+<div class="flex-1 bg-primary/30 h-[90%] animate-pulse"></div>
+<div class="flex-1 bg-primary/30 h-[50%]"></div>
+<div class="flex-1 bg-primary/30 h-[30%]"></div>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/20 rounded-lg p-4">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between text-[10px] font-bold">
+<span class="text-primary/50">COFFEE_RESERVE</span>
+<span class="text-secondary">CRITICAL</span>
+</div>
+<div class="h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-1/5 shadow-[0_0_10px_rgba(189,0,255,1)]"></div>
+</div>
+<p class="text-[9px] text-secondary/70 italic text-right">Refill mandatory for optimal performance</p>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer / Lower Console -->
+<footer class="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-primary/20 pt-4">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="text-[10px] text-primary/40 font-bold uppercase tracking-widest">Global Status</div>
+<div class="flex gap-1">
+<div class="size-2 bg-primary shadow-[0_0_5px_rgba(6,249,249,1)]"></div>
+<div class="size-2 bg-primary/20"></div>
+<div class="size-2 bg-primary/20"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-[10px] text-primary font-bold bg-primary/10 px-2 py-1 border border-primary/20">SYNC_OK</div>
+<div class="text-[10px] text-primary font-bold bg-primary/10 px-2 py-1 border border-primary/20">NET_READY</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">wifi</span>
+<span class="text-[10px] text-primary/70 font-mono">192.168.1.104</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">database</span>
+<span class="text-[10px] text-primary/70 font-mono">DB_CONNECT_STABLE</span>
+</div>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary text-background-dark font-black italic uppercase rounded-lg hover:brightness-125 transition-all skew-x-[-12deg] shadow-[0_0_20px_rgba(6,249,249,0.4)]">
+<span class="material-symbols-outlined text-lg">rocket</span>
+<span>ENGAGE</span>
+</button>
+</div>
+</footer>
+</div>
+<!-- Navigation Hub (Floating Radial Menu Placeholder - visual only for static HTML) -->
+<div class="fixed bottom-10 right-10 z-30 group">
+<div class="absolute bottom-0 right-0 w-64 h-64 bg-primary/5 backdrop-blur-md rounded-full border border-primary/20 scale-0 group-hover:scale-100 transition-transform duration-500 flex items-center justify-center">
+<div class="relative w-full h-full p-8">
+<button class="absolute top-4 left-1/2 -translate-x-1/2 hexagon w-12 h-12 bg-primary/20 border border-primary/60 flex items-center justify-center hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-xs">home</span>
+</button>
+<button class="absolute bottom-4 left-1/2 -translate-x-1/2 hexagon w-12 h-12 bg-primary/20 border border-primary/60 flex items-center justify-center hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-xs">person</span>
+</button>
+<button class="absolute left-4 top-1/2 -translate-y-1/2 hexagon w-12 h-12 bg-primary/20 border border-primary/60 flex items-center justify-center hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-xs">work</span>
+</button>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 hexagon w-12 h-12 bg-primary/20 border border-primary/60 flex items-center justify-center hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-xs">mail</span>
+</button>
+</div>
+</div>
+<button class="relative z-40 w-16 h-16 bg-background-dark border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(6,249,249,0.4)] group-hover:rotate-45 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">menu</span>
+</button>
+</div>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('gameTitle');
+    const scoreEl = document.getElementById('gameScore');
+    let score = 0;
+    let gameActive = false;
+
+    function drawGrid() {
+        ctx.strokeStyle = 'rgba(6, 249, 249, 0.1)';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < canvas.width; i += 20) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+        }
+        for (let i = 0; i < canvas.height; i += 20) {
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+        }
+    }
+
+    function draw() {
+        if (!gameActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid();
+        
+        // Draw Player (Triangle)
+        ctx.fillStyle = '#06f9f9';
+        ctx.beginPath();
+        ctx.moveTo(canvas.width/2, canvas.height - 20);
+        ctx.lineTo(canvas.width/2 - 10, canvas.height - 5);
+        ctx.lineTo(canvas.width/2 + 10, canvas.height - 5);
+        ctx.fill();
+
+        // Simple Invaders Visualization
+        ctx.fillStyle = '#bd00ff';
+        for(let i=0; i<5; i++) {
+            for(let j=0; j<3; j++) {
+                ctx.fillRect(80 + i*60 + Math.sin(Date.now()/500)*10, 40 + j*30, 20, 15);
+            }
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    startBtn.addEventListener('click', () => {
+        gameActive = true;
+        startBtn.innerHTML = '<span class="text-primary">SYSTEMS</span><br/>ONLINE';
+        draw();
+    });
+</script></body></html>
