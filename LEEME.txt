@@ -1,0 +1,134 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║              🛡️  SHIELD-MASTER 2026  🛡️                     ║
+║                                                               ║
+║         Dashboard de Seguridad Cyber-Luxury                   ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════
+  ⚡ INICIO RÁPIDO (4 PASOS)
+═══════════════════════════════════════════════════════════════
+
+  1️⃣  Abre: AYUDA.html (en tu navegador)
+      → Guía visual completa con todos los pasos
+      → Si no tienes Node.js, descárgalo ahí
+
+  2️⃣  Doble clic: verificar-sistema.bat
+      → Verifica que Node.js esté instalado
+
+  3️⃣  Doble clic: instalar-simple.bat
+      → Instala dependencias (2-5 minutos)
+
+  4️⃣  Doble clic: ejecutar-simple.bat
+      → Ejecuta la aplicación
+      → Abre: http://localhost:5173
+
+
+═══════════════════════════════════════════════════════════════
+  🎨 LO QUE VERÁS
+═══════════════════════════════════════════════════════════════
+
+  ╔═══════════════╗  ╔════════════════════════════════╗
+  ║   SIDEBAR     ║  ║   DASHBOARD                    ║
+  ║               ║  ║                                ║
+  ║ 🛡️ Logo       ║  ║  📊 Métricas en tiempo real   ║
+  ║ Dashboard     ║  ║  📈 Gráficos de red           ║
+  ║ Deep Scan     ║  ║  🎯 Amenazas detectadas       ║
+  ║ Privacidad    ║  ║  💻 Recursos del sistema      ║
+  ║ Comunicación  ║  ║                                ║
+  ║ Multimedia    ║  ║  Estética Cyber-Luxury:        ║
+  ║ Reportes      ║  ║  • Fondo OLED Black           ║
+  ║               ║  ║  • Rojo vibrante (#ef4444)    ║
+  ║ 🟢 Protegido  ║  ║  • Verde neón (#22c55e)       ║
+  ╚═══════════════╝  ╚════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════
+  📁 ARCHIVOS PRINCIPALES
+═══════════════════════════════════════════════════════════════
+
+  🌐 AYUDA.html                  → Guía visual completa
+  🔍 verificar-sistema.bat       → Verifica Node.js
+  📦 instalar-simple.bat         → Instala todo
+  🚀 ejecutar-simple.bat         → Ejecuta la app
+
+  📖 README.md                   → Documentación completa
+  ⚡ INICIO_RAPIDO.md            → Inicio rápido
+  📋 ARCHIVOS_ESENCIALES.md      → Lista de archivos
+
+
+═══════════════════════════════════════════════════════════════
+  ❌ ERROR: "not recognized as command"
+═══════════════════════════════════════════════════════════════
+
+  SOLUCIÓN:
+  
+  1. Abre AYUDA.html en tu navegador
+  2. Descarga Node.js: https://nodejs.org/
+  3. Instala (marca todas las opciones)
+  4. Reinicia tu PC
+  5. Ejecuta verificar-sistema.bat
+
+
+═══════════════════════════════════════════════════════════════
+  📦 GENERAR INSTALADOR .EXE
+═══════════════════════════════════════════════════════════════
+
+  1. generate-icons.bat          → Genera iconos
+  2. build-installer.bat         → Crea el .exe
+  3. release/Shield-Master-2026-Setup-1.0.0.exe
+
+
+═══════════════════════════════════════════════════════════════
+  🎯 CARACTERÍSTICAS
+═══════════════════════════════════════════════════════════════
+
+  ✅ Dashboard de monitoreo en tiempo real
+  ✅ Motor de escaneo profundo recursivo
+  ✅ Módulo de privacidad con VPN simulada
+  ✅ Tracker Remover para navegadores
+  ✅ Escudo de comunicación (email/web)
+  ✅ Protección multimedia anti-deepfakes
+  ✅ Sistema de alertas con IA
+  ✅ Generación de reportes PDF
+  ✅ Envío automático de reportes por email
+  ✅ Cuarentena y desinfección de archivos
+  ✅ Estética Cyber-Luxury completa
+
+
+═══════════════════════════════════════════════════════════════
+  🛠️ STACK TECNOLÓGICO
+═══════════════════════════════════════════════════════════════
+
+  • React 18 + TypeScript
+  • Vite (Build Tool)
+  • Tailwind CSS v4
+  • React Router v7
+  • Recharts (Gráficos)
+  • Motion (Animaciones)
+  • Electron (Desktop)
+  • jsPDF (PDFs)
+  • EmailJS (Correos)
+
+
+═══════════════════════════════════════════════════════════════
+  📱 RESPONSIVE
+═══════════════════════════════════════════════════════════════
+
+  ✅ Desktop (1920x1080+)
+  ✅ Laptop (1366x768+)
+  ✅ Tablet (768px+)
+  ✅ Mobile (375px+)
+
+
+═══════════════════════════════════════════════════════════════
+
+  Desarrollado con ❤️ usando React + TypeScript + Tailwind CSS
+  
+  Versión: 1.0.0
+  Licencia: MIT
+  Fecha: Marzo 2026
+
+═══════════════════════════════════════════════════════════════

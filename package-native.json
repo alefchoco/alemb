@@ -1,0 +1,65 @@
+{
+  "name": "shield-master-2026-native",
+  "version": "1.0.0",
+  "description": "Dashboard de seguridad Cyber-Luxury - Versión Nativa (sin React)",
+  "main": "electron-native.js",
+  "author": "Shield-Master Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron electron-native.js",
+    "build": "electron-builder --win --config.win.target=nsis",
+    "build:installer": "electron-builder --win --config.win.target=nsis",
+    "build:portable": "electron-builder --win --config.win.target=portable",
+    "build:all": "electron-builder --win"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.shieldmaster.app",
+    "productName": "Shield-Master 2026",
+    "copyright": "Copyright © 2026 Shield-Master Team",
+    "directories": {
+      "output": "release",
+      "buildResources": "public"
+    },
+    "files": [
+      "electron-native.js",
+      "preload.js",
+      "native/**/*",
+      "public/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Shield-Master 2026",
+      "installerIcon": "public/icon.ico",
+      "uninstallerIcon": "public/icon.ico",
+      "installerHeaderIcon": "public/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "public/icon.png",
+      "category": "Utility"
+    }
+  }
+}
