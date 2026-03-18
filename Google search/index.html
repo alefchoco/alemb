@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Google VR - Spatial Intelligence Search</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        body { background-color: #05050a; overflow: hidden; font-family: 'Inter', sans-serif; }
+        #space-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .hologram-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .hologram-card:hover { border-color: rgba(66, 133, 244, 0.5); transform: translateY(-2px); }
+        .g-blue { color: #4285F4; text-shadow: 0 0 8px #4285f499; }
+        .g-red { color: #EA4335; text-shadow: 0 0 8px #ea433599; }
+        .g-yellow { color: #FBBC05; text-shadow: 0 0 8px #fbbc0599; }
+        .g-green { color: #34A853; text-shadow: 0 0 8px #34a85399; }
+        .logo-3d { transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+</head>
+<body class="flex flex-col min-h-screen text-white items-center justify-center p-4">
+
+    <canvas id="space-canvas"></canvas>
+
+    <main class="w-full max-w-4xl flex flex-col items-center gap-12 relative z-10">
+        
+        <div class="text-center" id="logo-container">
+            <h1 class="text-7xl md:text-8xl font-bold mb-4 flex select-none logo-3d">
+                <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+            </h1>
+            <p class="text-xs tracking-[0.4em] uppercase text-blue-300 opacity-60">Spatial Intelligence Search</p>
+        </div>
+
+        <form action="https://www.google.com/search" method="GET" id="search-form" class="w-full max-w-2xl flex flex-col items-center gap-8">
+            <div class="w-full">
+                <div class="hologram-card flex items-center px-6 py-4 rounded-full border-white/10 focus-within:border-blue-500/50">
+                    <svg class="w-6 h-6 text-blue-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    
+                    <input class="bg-transparent border-none focus:ring-0 w-full text-lg px-4 text-white placeholder-blue-200/30" 
+                           id="search-input" 
+                           name="q" 
+                           placeholder="Explore the universe..." 
+                           type="text" 
+                           autocomplete="off" 
+                           required/>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <button type="submit" class="hologram-card px-8 py-2 rounded-md text-sm font-medium hover:scale-105 active:scale-95">
+                    Google Search
+                </button>
+                <button type="button" id="lucky-btn" class="hologram-card px-8 py-2 rounded-md text-sm font-medium hover:scale-105 active:scale-95">
+                    I'm Feeling Lucky
+                </button>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mt-8">
+            <div onclick="quickSearch('Quantum Computing')" class="hologram-card p-4 rounded-xl text-center cursor-pointer group">
+                <span class="text-[10px] text-pink-400 font-bold block mb-1">TRENDING</span>
+                <span class="text-sm opacity-80 group-hover:opacity-100">Quantum</span>
+            </div>
+            <div onclick="quickSearch('Mars Colony')" class="hologram-card p-4 rounded-xl text-center cursor-pointer group">
+                <span class="text-[10px] text-blue-400 font-bold block mb-1">SPACE</span>
+                <span class="text-sm opacity-80 group-hover:opacity-100">Mars</span>
+            </div>
+            <div onclick="quickSearch('Artificial Intelligence')" class="hologram-card p-4 rounded-xl text-center cursor-pointer group">
+                <span class="text-[10px] text-emerald-400 font-bold block mb-1">AI</span>
+                <span class="text-sm opacity-80 group-hover:opacity-100">Neuralink</span>
+            </div>
+            <div onclick="quickSearch('VR Metaverse')" class="hologram-card p-4 rounded-xl text-center cursor-pointer group">
+                <span class="text-[10px] text-purple-400 font-bold block mb-1">SPATIAL</span>
+                <span class="text-sm opacity-80 group-hover:opacity-100">Metaverse</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('search-form');
+        const input = document.getElementById('search-input');
+        const luckyBtn = document.getElementById('lucky-btn');
+
+        // Función para "I'm Feeling Lucky"
+        luckyBtn.addEventListener('click', () => {
+            input.value = "make a random search of the day";
+            form.submit(); // Envía el formulario a Google con el texto inyectado
+        });
+
+        // Función para las tarjetas de acceso rápido
+        function quickSearch(term) {
+            input.value = term;
+            form.submit();
+        }
+
+        // --- Animación de Fondo (Three.js) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('space-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const starsGeometry = new THREE.BufferGeometry();
+        const posArray = new Float32Array(2000 * 3);
+        for(let i=0; i < 6000; i++) posArray[i] = (Math.random() - 0.5) * 10;
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const starsMaterial = new THREE.PointsMaterial({ size: 0.005, color: 0xffffff });
+        const starMesh = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starMesh);
+        camera.position.z = 2;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            starMesh.rotation.y += 0.0007;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Efecto 3D en el Logo
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            const logo = document.querySelector('.logo-3d');
+            if(logo) logo.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
